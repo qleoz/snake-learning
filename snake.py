@@ -53,15 +53,16 @@ def update(board, snake):
 #spawns a new food dot on board
 def addfood(board, snake):
     empty = []
-    for i in range(0, 9):
-        for j in range(0, 9):
+    for i in range(10):
+        for j in range(10):
             if(board[i][j] == 0):
                 empty.append([i, j])
     if(len(empty) == 0):
         print("WIN WIN WIN WIN WIN")
         return board
-    select = random.randint(0, len(empty))
-    board[empty[select][0]][empty[select][1]] = 2
+    select = random.choice(empty)
+    print(select)
+    board[select[0]][select[1]] = 2
     return board
 
 #returns board after snake has moved, eaten, or game over
