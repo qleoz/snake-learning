@@ -7,8 +7,6 @@ SPEED = 500
 
 def visualize_canvas(board, snake):
     if(board == None):
-        print("GAME OVER")
-        print("Max length: ", len(snake))
         return False
     for i in range(0, len(board)):
         for j in range(0, len(board[i])):
@@ -21,14 +19,30 @@ def visualize_canvas(board, snake):
     canvas.create_rectangle(snake[0][0]*50, snake[0][1]*50, snake[0][0]*50+50, snake[0][1]*50+50, fill="red")
     return True
 
+def visualize_canvas_nogui(board, snake):
+    if(board == None):
+        return False
+    return True
+
+def visualize_canvas_text():
+    print()
+    for i in board:
+        print(i)
+
 #resets game values, returns a board and snake 2d array
 def reset():
+    global board
+    global snake
+    global direction
+    global score_alive
+    global score_eat
     board = [[0 for i in range(10)] for j in range(10)]
     snake = [[5, 5]]
     board = update(board, snake)
     board = addfood(board, snake)
     direction = 'l'
-    return board, snake, direction
+    score_alive = 0
+    score_eat = 0
 
 #updates board with snake position
 def update(board, snake):
@@ -52,13 +66,16 @@ def addfood(board, snake):
 
 #returns board after snake has moved, eaten, or game over
 def step(board, snake, direction):
+    global score_eat
+    global score_alive
     temp = checknext(board, snake, direction)
-    print("going " + direction)
     if(temp == None):
         return None
     if(board[temp[0]][temp[1]] == 2):
+        score_eat+=10
         return eatmove(board, snake, temp)
     else:
+        score_alive+=1
         return move(board, snake, temp)
 
 #makes and returns a coordinate if next move is valid (empty square, food)
@@ -141,15 +158,11 @@ def create_grid(event=None):
 
 def left(event=None):
     global next_input
-    next_input = 'l'
-    print("pressed left")
-    
+    next_input = 'l'    
 
 def right(event=None):
     global next_input
-    next_input = 'r'
-    print("pressed right")
-    
+    next_input = 'r'    
 
 def forwards():
     global board
@@ -157,18 +170,45 @@ def forwards():
     global direction
     change_direction()
     board = step(board, snake, direction)
-    score.set("Score: " + str(len(snake)))
-    if(visualize_canvas(board, snake)):
+    score.set("Score: " + str(score_alive + score_eat))
+    cont = visualize_canvas(board, snake)
+    if(cont):
         root.after(SPEED, forwards)
     else:
+        print("GAME OVER")
+        print("Max length: ", len(snake))
+        print("Score: ", score_eat + score_alive)
         root.destroy()
+
+def run():
+    root.after(SPEED, forwards)
+    root.mainloop()
+    return score_alive+score_eat
+
+def forwards_ai(keypress):
+    global board
+    global snake
+    global direction
+    global next_input
+    next_input = keypress
+    change_direction()
+    board = step(board, snake, direction)
+    score.set("Score: " + str(score_alive + score_eat))
+    cont = visualize_canvas_nogui(board, snake)
+    if(not cont):
+        root.destroy()
+        return score_alive+score_eat
+    else:
+        return None
 
 board = []
 snake = []
 direction = None
 next_input = None
+score_alive = 0
+score_eat = 0
 
-board, snake, direction = reset()
+reset()
 
 root = Tk()
 root.bind('a', left)
@@ -180,7 +220,7 @@ rootFrame = Frame(root, width=500, height=50, bg="white")
 rootFrame.pack()
 
 score = StringVar()
-score.set("Score: " + str(len(snake)))
+score.set("Score: " + str(score_alive + score_eat))
 scoreLabel = Label(rootFrame, textvariable=score).pack()
 
 canvas = Canvas(root, width=500, height=500, bg="gray")
@@ -188,9 +228,3 @@ canvas.bind('<Configure>', create_grid)
 canvas.pack()
 
 visualize_canvas(board, snake)
-
-root.after(SPEED, forwards)
-root.mainloop()
-
-
-
