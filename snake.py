@@ -61,7 +61,6 @@ def addfood(board, snake):
         print("WIN WIN WIN WIN WIN")
         return board
     select = random.choice(empty)
-    print(select)
     board[select[0]][select[1]] = 2
     return board
 
@@ -197,10 +196,9 @@ def forwards_ai(keypress):
     score.set("Score: " + str(score_alive + score_eat))
     cont = visualize_canvas_nogui(board, snake)
     if(not cont):
-        root.destroy()
         return score_alive+score_eat
     else:
-        return None
+        return 0
 
 board = []
 snake = []
