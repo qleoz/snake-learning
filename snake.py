@@ -5,14 +5,6 @@ from tkinter import *
 #frame speed in ms
 SPEED = 500
 
-def visualize(board):
-    print()
-    if(board == None):
-        print("RIP RIP RIP RIP")
-        return None
-    for l in board:
-        print(l)
-
 def visualize_canvas(board, snake):
     if(board == None):
         print("GAME OVER")
@@ -134,10 +126,6 @@ def input_direction():
     d = input("u/d/l/r: ")
     return d
 
-def input_mode():
-    d = input("[t]ext or [g]ui: ")
-    return d
-
 def create_grid(event=None):
     w = canvas.winfo_width() # Get current width of canvas
     h = canvas.winfo_height() # Get current height of canvas
@@ -182,35 +170,27 @@ next_input = None
 
 board, snake, direction = reset()
 
-if(input_mode() == 't'):
-    visualize(board)
-    while(board != None):
-        direction = input_direction()
-        board = step(board, snake, direction)
-        visualize(board)
-else:
-# #graphics stuff
-    root = Tk()
-    root.bind('a', left)
-    root.bind('d', right)
-    root.bind('<Left>', left)
-    root.bind('<Right>', right)
+root = Tk()
+root.bind('a', left)
+root.bind('d', right)
+root.bind('<Left>', left)
+root.bind('<Right>', right)
 
-    rootFrame = Frame(root, width=500, height=50, bg="white")
-    rootFrame.pack()
+rootFrame = Frame(root, width=500, height=50, bg="white")
+rootFrame.pack()
 
-    score = StringVar()
-    score.set("Score: " + str(len(snake)))
-    scoreLabel = Label(rootFrame, textvariable=score).pack()
+score = StringVar()
+score.set("Score: " + str(len(snake)))
+scoreLabel = Label(rootFrame, textvariable=score).pack()
 
-    canvas = Canvas(root, width=500, height=500, bg="gray")
-    canvas.bind('<Configure>', create_grid)
-    canvas.pack()
+canvas = Canvas(root, width=500, height=500, bg="gray")
+canvas.bind('<Configure>', create_grid)
+canvas.pack()
 
-    visualize_canvas(board, snake)
+visualize_canvas(board, snake)
 
-    root.after(SPEED, forwards)
-    root.mainloop()
+root.after(SPEED, forwards)
+root.mainloop()
 
 
 
