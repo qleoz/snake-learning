@@ -2,7 +2,8 @@ import random
 import threading, time
 from tkinter import *
 import snake
-import ai
+import random_ai as ai
+import smart_ai
 
 class snake_gui:
     
@@ -107,6 +108,7 @@ class snake_gui:
             self.root.destroy()
 
     def get_next_move(self):
+        ai.get_info(self.s.get_board(), self.s.get_snake(), self.s.get_direction())
         temp = ai.generate_next_move()
         if(temp == 'l'):
             self.left()

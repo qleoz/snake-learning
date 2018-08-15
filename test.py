@@ -8,5 +8,4 @@ for i in range(10):
     score = sgui.run()
     if(score > best):
         best = score
-
 print("best score: ", best)
