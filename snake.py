@@ -5,18 +5,32 @@ from tkinter import *
 #frame speed in ms
 SPEED = 500
 
+# def visualize_canvas(board, snake):
+#     if(board == None):
+#         return False
+#     for i in range(10):
+#         for j in range(10):
+#             if(board[i][j] == 1): #snake body
+#                 canvas.create_rectangle(i*50, j*50, i*50+50, j*50+50, fill="green")
+#             elif(board[i][j] == 2): #food pellet
+#                 canvas.create_rectangle(i*50, j*50, i*50+50, j*50+50, fill="yellow")
+#             else: #board background
+#                 canvas.create_rectangle(i*50, j*50, i*50+50, j*50+50, fill="gray")
+#     canvas.create_rectangle(snake[0][0]*50, snake[0][1]*50, snake[0][0]*50+50, snake[0][1]*50+50, fill="red") #snakehead
+#     return True
+
 def visualize_canvas(board, snake):
     if(board == None):
         return False
-    for i in range(0, len(board)):
-        for j in range(0, len(board[i])):
-            if(board[i][j] == 1):
-                canvas.create_rectangle(i*50, j*50, i*50+50, j*50+50, fill="green")
-            elif(board[i][j] == 2):
-                canvas.create_rectangle(i*50, j*50, i*50+50, j*50+50, fill="yellow")
-            else:
-                canvas.create_rectangle(i*50, j*50, i*50+50, j*50+50, fill="gray")
-    canvas.create_rectangle(snake[0][0]*50, snake[0][1]*50, snake[0][0]*50+50, snake[0][1]*50+50, fill="red")
+    for i in range(10):
+        for j in range(10):
+            if(board[i][j] == 1): #snake body
+                canvas.create_rectangle(j*50, i*50, j*50+50, i*50+50, fill="green")
+            elif(board[i][j] == 2): #food pellet
+                canvas.create_rectangle(j*50, i*50, j*50+50, i*50+50, fill="yellow")
+            else: #board background
+                canvas.create_rectangle(j*50, i*50, j*50+50, i*50+50, fill="gray")
+    canvas.create_rectangle(snake[0][1]*50, snake[0][0]*50, snake[0][1]*50+50, snake[0][0]*50+50, fill="red") #snakehead
     return True
 
 def visualize_canvas_nogui(board, snake):
@@ -40,7 +54,7 @@ def reset():
     snake = [[5, 5]]
     board = update(board, snake)
     board = addfood(board, snake)
-    direction = 'l'
+    direction = 'u'
     score_alive = 0
     score_eat = 0
 
@@ -52,6 +66,7 @@ def update(board, snake):
 
 #spawns a new food dot on board
 def addfood(board, snake):
+    global food
     empty = []
     for i in range(10):
         for j in range(10):
@@ -61,6 +76,7 @@ def addfood(board, snake):
         print("WIN WIN WIN WIN WIN")
         return board
     select = random.choice(empty)
+    food = select
     board[select[0]][select[1]] = 2
     return board
 
@@ -106,22 +122,22 @@ def change_direction():
     global next_input
     if(next_input == 'l'):
         if(direction == 'u'):
-            direction = 'r'
-        elif(direction == 'l'):
-            direction = 'u'
-        elif(direction == 'd'):
             direction = 'l'
-        else:
+        elif(direction == 'l'):
             direction = 'd'
+        elif(direction == 'd'):
+            direction = 'r'
+        else:
+            direction = 'u'
     if(next_input == 'r'):
         if(direction == 'u'):
-            direction = 'l'
-        elif(direction == 'r'):
-            direction = 'u'
-        elif(direction == 'd'):
             direction = 'r'
+        elif(direction == 'r'):
+            direction = 'd'
+        elif(direction == 'd'):
+            direction = 'l'
         else:
-            direction = 'd'    
+            direction = 'u'    
     next_input = None
 
 #grows snake by 1, makes new food, returns new board
@@ -202,6 +218,7 @@ def forwards_ai(keypress):
 
 board = []
 snake = []
+food = []
 direction = None
 next_input = None
 score_alive = 0
